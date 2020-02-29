@@ -5,12 +5,12 @@ using UnityEngine;
 public class AnimationScript : MonoBehaviour
 {
     Animator animator; CharacterController characterController;
-    [SerializeField] bool[] animationStates = new bool[2];
+    [SerializeField] bool[] animationStates = new bool[3];
     //0 - Idle
     //1 - Idle 2
-    //2 - Walking
+    //2 - Movement
 
-    float speedGraduate, vertical;
+    [SerializeField] float vertical, horizontal;
 
     private void Awake()
     {
@@ -22,16 +22,17 @@ public class AnimationScript : MonoBehaviour
     {
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
+        vertical = Input.GetAxis("Vertical"); horizontal = Input.GetAxis("Horizontal");
         ActionAnimationController();
     }
     
     //Method for control of Player's animation
     void ActionAnimationController()
     {
-        Idle(); WalkingRun();
         Jump();
+        IdleWalkingRun();
     }
 
     bool jump = false;
@@ -43,24 +44,14 @@ public class AnimationScript : MonoBehaviour
         animator.SetBool("Jump", jump);
     }
 
-    void WalkingRun()
+    void IdleWalkingRun()
     {
-        speedGraduate = Mathf.Clamp(speedGraduate, 0f, 1f);
-        vertical = Input.GetAxis("Vertical");
+        if (vertical == 0) animationStates[0] = true;
+                     else animationStates[0] = false;
 
-        if (vertical > 0) speedGraduate += Time.deltaTime / 2;
-            else if (speedGraduate < 0 && vertical == 0) speedGraduate = 0;
-                else speedGraduate -= Time.deltaTime * 8;
 
-        if (vertical < 0) speedGraduate -= Time.deltaTime / 2;
-
-        animator.SetFloat("Speed", speedGraduate);
-    }
-
-    void Idle()
-    {
-        if (speedGraduate <= 0) animationStates[0] = true;
-        else animationStates[0] = false; ToIdle2();
+        ToIdle2(); if (vertical != 0 || horizontal != 0) animationStates[2] = true; else animationStates[2] = false;
+        animator.SetBool("Movement", animationStates[2]);  animator.SetFloat("Vertical", vertical);
     }
 
     //method and variabe for switch of idle (Idle Variable)
