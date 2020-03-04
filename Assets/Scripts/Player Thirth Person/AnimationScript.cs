@@ -10,7 +10,7 @@ public class AnimationScript : MonoBehaviour
     //1 - Idle 2
     //2 - Movement
 
-    [SerializeField] float vertical, horizontal;
+    [SerializeField] float vertical, horizontal, canRun;
 
     private void Awake()
     {
@@ -49,9 +49,15 @@ public class AnimationScript : MonoBehaviour
         if (vertical == 0) animationStates[0] = true;
                      else animationStates[0] = false;
 
+        if (vertical >= 1)
+        {
+            canRun += Time.deltaTime / 4;
+            if (canRun > 1) canRun = 1;
+        }
+        else canRun = 0;
 
         ToIdle2(); if (vertical != 0 || horizontal != 0) animationStates[2] = true; else animationStates[2] = false;
-        animator.SetBool("Movement", animationStates[2]);  animator.SetFloat("Vertical", vertical);
+        animator.SetBool("Movement", animationStates[2]);  animator.SetFloat("Vertical", vertical + canRun);
     }
 
     //method and variabe for switch of idle (Idle Variable)
