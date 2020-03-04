@@ -5,7 +5,7 @@ using UnityEngine;
 public class PlayerFirstBehaviour : MonoBehaviour
 {
 
-    public bool lockMouse = true;
+    public bool lockMouse = true, jumping;
     public float sensibility, speed, gravity, jumpForce;
 
     private float mouseX = 0.0f, mouseY = 0.0f;
